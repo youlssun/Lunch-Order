@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Employee Lunch Order System — Log in</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="login-page app-page">
+  <div class="login-wrap">
+    <div class="login-card">
+      <div class="login-card__brand">
+        <img class="login-logo" src="images/kamtec-logo.png" alt="Kamtec" width="200" height="56" />
+      </div>
+      <h1><span class="login-title__emoji" aria-hidden="true">🍱</span> Employee Lunch Order System</h1>
+
+      <div id="loginAlert" class="alert alert--error hidden" role="alert"></div>
+
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="userId">User ID</label>
+          <input type="text" id="userId" name="userId" autocomplete="username" required placeholder="Employee or admin ID" />
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" autocomplete="current-password" required placeholder="Password" />
+        </div>
+        <button type="submit" class="btn btn--primary btn--block">Log in</button>
+      </form>
+
+      <p class="login-copyright">Copyright © 2026 Yeulyee Kim</p>
+    </div>
+  </div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    (function () {
+      const session = getSession();
+      if (session) {
+        window.location.href =
+          session.role === "admin" ? "admin.html" : "employee.html";
+        return;
+      }
+
+      const form = document.getElementById("loginForm");
+      const alertEl = document.getElementById("loginAlert");
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        const userId = document.getElementById("userId").value.trim();
+        const password = document.getElementById("password").value;
+
+        const user = findUserByCredentials(userId, password);
+        if (!user) {
+          alertEl.textContent = "Invalid user ID or password.";
+          alertEl.classList.remove("hidden");
+          return;
+        }
+
+        setSession(user);
+        window.location.href =
+          user.role === "admin" ? "admin.html" : "employee.html";
+      });
+    })();
+  </script>
+</body>
+</html>

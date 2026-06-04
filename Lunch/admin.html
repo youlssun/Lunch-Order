@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Employee Lunch Order System — Admin</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="app-page">
+  <header class="app-topbar">
+    <img class="app-topbar__logo" src="images/kamtec-logo.png" alt="Kamtec" width="140" height="40" />
+  </header>
+  <div class="page page--wide">
+    <header class="header">
+      <h1>Admin — Lunch summary</h1>
+      <div>
+        <button type="button" class="btn btn--logout btn--sm" id="btnLogout">Log out</button>
+      </div>
+    </header>
+
+    <div id="msg" class="alert hidden" role="status"></div>
+
+    <nav class="tabs" role="tablist">
+      <button type="button" class="tab tab--active" data-tab="daily">Daily totals</button>
+      <button type="button" class="tab" data-tab="orders">Manage orders</button>
+      <button type="button" class="tab" data-tab="monthly">Month-end report</button>
+      <button type="button" class="tab" data-tab="users">Employee accounts</button>
+    </nav>
+
+    <div id="panel-daily" class="tab-panel tab-panel--active">
+      <section class="card">
+        <h2>Daily Lunch Box Count</h2>
+        <div class="daily-toolbar">
+          <div class="daily-toolbar__row">
+            <div class="form-group daily-toolbar__date">
+              <label for="dailyDate">Date</label>
+              <input type="date" id="dailyDate" />
+            </div>
+            <button type="button" class="btn btn--primary daily-toolbar__btn" id="btnLoadDaily">View</button>
+          </div>
+          <div class="stat-box stat-box--green stat-box--full">
+            <div class="stat-box__label">Order count</div>
+            <div class="stat-box__value" id="dailyOrderCount">0</div>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Employee</th>
+                <th>User ID</th>
+              </tr>
+            </thead>
+            <tbody id="dailyTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>This week summary</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Order count</th>
+              </tr>
+            </thead>
+            <tbody id="weekSummaryBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <div id="panel-orders" class="tab-panel">
+      <section class="card">
+        <h2>Manage orders</h2>
+        <p class="hint">One lunch per employee per day. Place or delete orders for any employee. No CST cutoff for admins.</p>
+
+        <div class="form-row manage-orders-form manage-orders-form--toolbar" style="margin-top: 1rem;">
+          <div class="form-group">
+            <label for="filterDate">Date</label>
+            <input type="date" id="filterDate" />
+          </div>
+          <div class="form-group manage-orders-form__action">
+            <label class="manage-orders-form__action-label">&nbsp;</label>
+            <button type="button" class="btn btn--success" id="btnPlaceOrder">Place order</button>
+          </div>
+        </div>
+
+        <div class="admin-employee-picker-panel">
+          <h3 class="admin-employee-picker-panel__title">Employees</h3>
+          <p class="hint">Check one or more employees, then click Place order.</p>
+          <div id="adminEmployeePicker" class="admin-employee-picker" role="group" aria-label="Select employees to order"></div>
+        </div>
+
+        <div class="table-wrap" style="margin-top: 1rem;">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Employee</th>
+                <th>Qty</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="adminOrdersBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <div id="panel-monthly" class="tab-panel">
+      <section class="card">
+        <h2>Month-end report</h2>
+
+        <div class="form-row" style="max-width: 320px; margin: 1rem 0;">
+          <div class="form-group">
+            <label for="reportYear">Year</label>
+            <input type="number" id="reportYear" min="2020" max="2035" />
+          </div>
+          <div class="form-group">
+            <label for="reportMonth">Month</label>
+            <input type="number" id="reportMonth" min="1" max="12" />
+          </div>
+        </div>
+
+        <div class="btn-group">
+          <button type="button" class="btn btn--primary" id="btnPreviewMonthly">Preview</button>
+          <button type="button" class="btn btn--success" id="btnExportExcel">Download CSV</button>
+        </div>
+
+        <div class="table-wrap table-wrap--scroll" style="margin-top: 1.25rem; max-height: min(400px, 55vh); overflow: auto;">
+          <table id="monthlyPreviewTable">
+            <thead id="monthlyHead"></thead>
+            <tbody id="monthlyBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <div id="panel-users" class="tab-panel">
+      <section class="card">
+        <h2>Add employee</h2>
+        <form id="addEmployeeForm" autocomplete="off">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="newUserId">User ID</label>
+              <input type="text" id="newUserId" required autocomplete="off" value="" />
+            </div>
+            <div class="form-group">
+              <label for="newUserName">Name</label>
+              <input type="text" id="newUserName" required autocomplete="off" value="" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="newDepartment">Department</label>
+              <input type="text" id="newDepartment" autocomplete="off" value="" />
+            </div>
+            <div class="form-group">
+              <label for="newPassword">Password</label>
+              <input type="password" id="newPassword" required autocomplete="new-password" value="" />
+            </div>
+          </div>
+          <button type="submit" class="btn btn--success">Add employee</button>
+        </form>
+      </section>
+
+      <section class="card">
+        <h2>Employee accounts</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>User ID</th>
+                <th>Name</th>
+                <th>Department</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="usersTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/dates.js"></script>
+  <script src="js/orders.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>
